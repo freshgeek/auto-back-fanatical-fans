@@ -25,7 +25,8 @@
 > 运行前提是Java环境哈，这个是基础就不贴教程了,在idea中打开，然后按下面的修改做即可
 > 
 
-1. 获取你的cookie 粘贴到 top.chen.fansback.common.cmd.CsdnRequest.CSDN_COOKIE 字符串
+1. 获取你的cookie(登录你的个人页，打开浏览器调试F12，随便找一个请求点开，复制如图的value) 粘贴到 top.chen.fansback.common.cmd.CsdnRequest.CSDN_COOKIE 字符串
+![图片](image/catch_20220722215206.png)
 2. 配置收藏夹id，收藏文章都会到这个文件夹（top.chen.fansback.common.cmd.CsdnRequest.defaultFavFoldId）
 这个在电脑上点收藏的时候，打开浏览器的调试（F12），选到网络-选择fetch/xhr , 然后点一下收藏（会出来收藏列表）,选择你想把三连保存到哪个收藏夹下的id复制到这
 ![图片](image/catch_20220722200906.png)
