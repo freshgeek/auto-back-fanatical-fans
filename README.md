@@ -26,12 +26,16 @@
 > 
 
 1. 获取你的cookie 粘贴到 top.chen.fansback.common.cmd.CsdnRequest.CSDN_COOKIE 字符串
-2. top.chen.fansback.common.spider.csdn.BackFansSpider.run 程序入口（每分钟运行一次,只扫描最近一页消息，如果消息多可以把执行频率加大）
+2. 配置收藏夹id，收藏文章都会到这个文件夹（top.chen.fansback.common.cmd.CsdnRequest.defaultFavFoldId）
+这个在电脑上点收藏的时候，打开浏览器的调试（F12），选到网络-选择fetch/xhr , 然后点一下收藏（会出来收藏列表）,选择你想把三连保存到哪个收藏夹下的id复制到这
+![图片](image/catch_20220722200906.png)
+3. top.chen.fansback.common.spider.csdn.BackFansSpider.run 程序入口（每分钟运行一次,只扫描最近一页消息，如果消息多可以把执行频率加大）
 
 ## 配置项&说明
 1. 评论的文案：top.chen.fansback.common.BackProperties 这里面(欢迎大家提交新的文案供大家参考)
 2. 点赞每天有限制
 3. 评论每分钟限流3条，所以sleep 了 21秒
+4. 有时候自己给自己三连也会触发回的逻辑，可以到 top.chen.fansback.common.cmd.CsdnRequest.OWNER 配置自己的name（打开自己的主页，比如我的：https://blog.csdn.net/qq_35530042）qq_35530042就是我的name
 
 
 # 后续考虑

@@ -96,7 +96,7 @@ public class CsdnRequest {
 	/**
 	 * 自己
 	 */
-	public static String OWNER = "qq_35530042";
+	public static String OWNER = "";
 	public static boolean ARTICLE_COMMENT_LIMIT = false;
 	public static int MESSAGE_PAGE_SIZE = 15;
 	public static boolean LIKE_LIMIT = false;
@@ -126,7 +126,7 @@ public class CsdnRequest {
 	 * 评论限流 21s，每分钟只能评论三条
 	 */
 	static int COMMENT_SLEEP = 21;
-	static long defaultFavFoldId = 20076997;
+	static long defaultFavFoldId = 0L;
 	// 我的评论列表
 	String aritle_comment_list = "https://blog.csdn.net/phoenix/web/v1/comment/list/125729335?page=1&size=10&fold=unfold&commentId=22410830";
 
