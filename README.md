@@ -24,7 +24,15 @@
 
 ## 使用说明
 > 
-> 运行前提是Java环境哈，这个是基础就不贴教程了,在idea中打开，然后按下面的修改做即可
+> 运行前提是Java环境哈，考虑大家不一定是Java开发所以这里贴个粉丝发的教程 `一一哥`
+> 
+> [jdk mac环境安装](http://t.csdn.cn/bhzhs)
+> 
+> [jdk window环境安装](http://t.csdn.cn/yT8RU)
+> 
+> [idea 配置详解](http://t.csdn.cn/5b6AL)
+> 
+> 然后按下面的修改做即可
 > 
 
 1. 获取你的cookie(登录你的个人页，打开浏览器调试F12，随便找一个请求点开，复制如图的value) 粘贴到 top.chen.fansback.common.cmd.CsdnRequest.CSDN_COOKIE 字符串
