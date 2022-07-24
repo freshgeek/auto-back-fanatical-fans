@@ -48,7 +48,7 @@
 - **然后运行maven命令clean --> package，会在target目录下生成一个jar包文件**
   **先在本地运行试试能不能成功**
 
-![image-20220724141031125](D:\DownLoadApp4_Prj\GithubFork\auto-back-fanatical-fans\image\P2022年7月24日_14h04m14s_008_.png)
+![image-20220724141031125](image\P2022年7月24日_14h04m14s_008_.png)
 
 ![图像 1](image\图像 1.png)
 
