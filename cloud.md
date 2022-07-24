@@ -64,13 +64,12 @@
 
 - **在文件列表开启终端，输入命令 nohup java -jar auto-back-fanatical-fans-1.0-SNAPSHOT.jarr**
 
-![img](https://secure2.wostatic.cn/static/4g522LndtN7sVRcvoncdVj/image.png?auth_key=1658646296-2M66LVVdbNeS3YDWd3ZFm3-0-bffca2ec5a818375f526c4f5cf32c997)
-
 - **默认不显示 输出日志，需要加个命令**
 
-![img](https://secure2.wostatic.cn/static/kVXd88EypNSwsPxuoTUSFN/image.png?auth_key=1658646308-4DCXiMvfBjGhQxZBHccCMM-0-5d9360ca56caca01d0c16899caf4a55f)
+![image](image\image.png)
 
 大功告成
 
 ![图像 008](image\图像 008.png)
 
+****
