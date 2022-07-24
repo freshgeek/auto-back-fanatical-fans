@@ -48,6 +48,7 @@
 3. 评论每分钟限流3条，所以sleep 了 21秒
 4. 有时候自己给自己三连也会触发回的逻辑，可以到 top.chen.fansback.common.cmd.CsdnRequest.OWNER 配置自己的name（打开自己的主页，比如我的：https://blog.csdn.net/qq_35530042）qq_35530042就是我的name
 
+# 想直接运行在服务器上可以配置好后参考[托管到云服务器一直运行](cloud.md)
 
 # 后续考虑&欢迎PR
 

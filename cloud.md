@@ -48,9 +48,9 @@
 - **然后运行maven命令clean --> package，会在target目录下生成一个jar包文件**
   **先在本地运行试试能不能成功**
 
-![image-20220724141031125](image\P2022年7月24日_14h04m14s_008_.png)
+![image-20220724141031125](image/cloud_tech_jar.png)
 
-![图像 1](image\图像 1.png)
+![图像 1](image/cloud_tech_run.png)
 
 **可以看到已经运行成功，接下来就是上云操作了**
 
@@ -60,16 +60,16 @@
 
 - 上传文件
 
-  ![d](image\图像 001 - 副本.png)
+  ![d](image/cloud_tech_upload.png)
 
 - **在文件列表开启终端，输入命令 nohup java -jar auto-back-fanatical-fans-1.0-SNAPSHOT.jarr**
 
 - **默认不显示 输出日志，需要加个命令**
 
-![image](image\image.png)
+![image](image/cloud_tech_nohup.png)
 
 大功告成
 
-![图像 008](image\图像 008.png)
+![图像 008](image/cloud_tech_show_log.png)
 
 ****
