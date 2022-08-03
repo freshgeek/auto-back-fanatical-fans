@@ -1,5 +1,6 @@
 package top.chen.fansback.common.cmd;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpRequest;
@@ -8,6 +9,8 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import top.chen.fansback.common.spider.csdn.db.UniqDatasource;
 import top.chen.fansback.common.spider.csdn.dto.fav.FavAddBody;
 import top.chen.fansback.common.spider.csdn.dto.home.ArticleList;
@@ -25,6 +28,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class CsdnRequest {
+	private static   String LIKE_LIMIT = null;
+	private static String ARTICLE_COMMENT_TODAY_LIMIT;
 
 
 	// 点赞评论
@@ -99,7 +104,6 @@ public class CsdnRequest {
 	public static String OWNER = "";
 	public static boolean ARTICLE_COMMENT_LIMIT = false;
 	public static int MESSAGE_PAGE_SIZE = 15;
-	public static boolean LIKE_LIMIT = false;
 	//	curl 'https://blog.csdn.net/phoenix/web/v1/comment/list/125729335?page=1&size=10&fold=unfold&commentId=22410830' \
 //			-X 'POST' \
 //			-H 'authority: blog.csdn.net' \
@@ -190,6 +194,37 @@ public class CsdnRequest {
 		return response.isOk() && response.body().contains("success");
 	}
 
+	public static ArticleList extraDetail(String url) {
+		HttpRequest request = HttpUtil.createGet(url);
+		addHead(request, "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\n" +
+				"accept-encoding: gzip, deflate, br\n" +
+				"accept-language: zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7,zh-HK;q=0.6\n" +
+				"cache-control: no-cache\n" +
+				"pragma: no-cache\n" +
+				"sec-ch-ua: \".Not/A)Brand\";v=\"99\", \"Google Chrome\";v=\"103\", \"Chromium\";v=\"103\"\n" +
+				"sec-ch-ua-mobile: ?0\n" +
+				"sec-ch-ua-platform: \"Windows\"\n" +
+				"sec-fetch-dest: document\n" +
+				"sec-fetch-mode: navigate\n" +
+				"sec-fetch-site: none\n" +
+				"sec-fetch-user: ?1\n" +
+				"upgrade-insecure-requests: 1\n" +
+				"user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36");
+		Optional<Document> parse = Optional.ofNullable(Jsoup.parse(request.execute().body()));
+		ArticleList list = new ArticleList();
+		list.setUrl(url);
+		list.setAuthor(parse.map(s -> s.select("#uid > span")).map(s -> s.get(0)).map(s -> s.attr("username")).orElse(null));
+		list.setTitle(parse.map(s -> s.select("head > meta:nth-child(17)")).map(s -> s.get(0)).map(s -> s.attr("content")).orElse(null));
+		list.setDescription(parse.map(s -> s.select("head > meta:nth-child(19)")).map(s -> s.get(0)).map(s -> s.attr("content")).orElse(null));
+		return list;
+	}
+
+	public static boolean toDayCommentLimit() {
+		return StrUtil.equals(ARTICLE_COMMENT_TODAY_LIMIT, DateUtil.today());
+	}
+	public static boolean toDayLikeLimit() {
+		return StrUtil.equals(LIKE_LIMIT, DateUtil.today());
+	}
 	/**
 	 * 给文章评论
 	 */
@@ -198,6 +233,9 @@ public class CsdnRequest {
 		HttpRequest post = HttpUtil.createPost("https://blog.csdn.net/phoenix/web/v1/comment/submit");
 		if (StrUtil.isEmpty(url)) {
 			log.warn("url 为空 ");
+			return false;
+		}
+		if (toDayCommentLimit()){
 			return false;
 		}
 		if (UniqDatasource.exists(url)) {
@@ -226,12 +264,16 @@ public class CsdnRequest {
 				"x-requested-with: XMLHttpRequest\n" +
 				"x-tingyun-id: im-pGljNfnc;r=27412521");
 		HttpResponse httpResponse = post.executeAsync();
-		log.info("[{}}]评论[{}]返回：{}", comment, url, httpResponse.body());
+		log.info("[{}]评论[{}]返回：{}", comment, url, httpResponse.body());
 		if (httpResponse.isOk() && httpResponse.body().contains("success")) {
 			UniqDatasource.save(url);
 		}
 		if (httpResponse.body().contains("您的账号已被禁言")) {
 			ARTICLE_COMMENT_LIMIT = true;
+			return false;
+		}
+		if (httpResponse.body().contains("您已达到当日发送上限")) {
+			ARTICLE_COMMENT_TODAY_LIMIT = DateUtil.today();
 			return false;
 		}
 		TimeUnit.SECONDS.sleep(COMMENT_SLEEP);
@@ -355,7 +397,7 @@ public class CsdnRequest {
 		HttpResponse execute = request.execute();
 		log.info("点赞操作 {} , {}", url, execute.body());
 		if (execute.body().contains("已达上限")) {
-			LIKE_LIMIT = true;
+			LIKE_LIMIT = DateUtil.today();
 		}
 		return execute.isOk() && execute.body().contains("success") && execute.body().contains("status\":true");
 
