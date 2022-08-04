@@ -43,8 +43,12 @@
    ![图片](image/catch_20220722200906.png)
 4. top.chen.fansback.common.spider.csdn.BackFansSpider.run 程序入口（每分钟运行一次,只扫描最近一页消息，如果消息多可以把执行频率加大）
 
-## 主动三连接龙
-
+## 主动三连接龙 [#issues8](https://github.com/freshgeek/auto-back-fanatical-fans/issues/8)
+1. 依赖前面的修改项后
+2. 入口在top.chen.fansback.common.spider.csdn.ActiveSolitaireSpider.main ，将接龙文本复制过来
+   ![图片示例](image/catch_solitaire_001.png)
+3. 右键运行即可
+4. 三连可以选择注释掉（默认会对文章：评论、点赞、收藏）
 
 
 ## 配置项&说明
