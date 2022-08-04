@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class CsdnRequest {
 	private static   String LIKE_LIMIT = null;
-	private static String ARTICLE_COMMENT_TODAY_LIMIT;
+	private static String ARTICLE_COMMENT_TODAY_LIMIT = null;
 
 
 	// 点赞评论
