@@ -107,11 +107,11 @@ public class BackFansSpider {
 				}
 				TimeUnit.SECONDS.sleep(3);
 			} else if (content.getTt().contains("点赞了")) {
-				if (CsdnRequest.LIKE_LIMIT) {
+				if (CsdnRequest.toDayLikeLimit()) {
 					continue;
 				}
 				for (ArticleList articleList : lastList) {
-					if (CsdnRequest.LIKE_LIMIT) {
+					if (CsdnRequest.toDayLikeLimit()) {
 						break;
 					}
 					if (CsdnRequest.postLikeArticle(articleList.getUrl())) {
@@ -149,6 +149,9 @@ public class BackFansSpider {
 			for (String url : articleUrl) {
 				if (CsdnRequest.postComment(RandomUtil.randomEle(BackProperties.replayCommentArr, BackProperties.replayCommentArr.length - 1), url)) {
 					UniqDatasource.save(format);
+					break;
+				}
+				if (CsdnRequest.toDayCommentLimit()){
 					break;
 				}
 				if (CsdnRequest.ARTICLE_COMMENT_LIMIT) {

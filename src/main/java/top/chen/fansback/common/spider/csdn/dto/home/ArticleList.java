@@ -10,6 +10,7 @@ public class ArticleList {
 
 	private long articleId;
 	private String title;
+	private String author;
 	private String description;
 	private String url;
 	private int type;

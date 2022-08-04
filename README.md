@@ -22,7 +22,7 @@
 
 
 
-## 使用说明
+## 被动回三连使用说明
 > 
 > 运行前提是Java环境哈，考虑大家不一定是Java开发所以这里贴个粉丝发的教程 `一一哥`
 > 
@@ -42,6 +42,14 @@
    这个在电脑上点收藏的时候，打开浏览器的调试（F12），选到网络-选择fetch/xhr , 然后点一下收藏（会出来收藏列表）,选择你想把三连保存到哪个收藏夹下的id复制到这
    ![图片](image/catch_20220722200906.png)
 4. top.chen.fansback.common.spider.csdn.BackFansSpider.run 程序入口（每分钟运行一次,只扫描最近一页消息，如果消息多可以把执行频率加大）
+
+## 主动三连接龙 [#issues8](https://github.com/freshgeek/auto-back-fanatical-fans/issues/8)
+1. 依赖前面的修改项后
+2. 入口在top.chen.fansback.common.spider.csdn.ActiveSolitaireSpider.main ，将接龙文本复制过来
+   ![图片示例](image/catch_solitaire_001.png)
+3. 右键运行即可
+4. 三连可以选择注释掉（默认会对文章：评论、点赞、收藏）
+
 
 ## 配置项&说明
 1. 评论的文案：top.chen.fansback.common.BackProperties 这里面(欢迎大家提交新的文案供大家参考)
