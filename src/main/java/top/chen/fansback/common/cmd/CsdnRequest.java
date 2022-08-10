@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import top.chen.fansback.common.spider.csdn.dto.home.PrivateMessage;
+import top.chen.fansback.common.spider.csdn.dto.message.PrivateMessageResponse;
 
 /**
  * @author chenchao
@@ -401,6 +403,66 @@ public class CsdnRequest {
 		}
 		return execute.isOk() && execute.body().contains("success") && execute.body().contains("status\":true");
 
+	}
+	
+	/**
+	 * 获取私信消息列表 get請求
+	 */
+	public static List<PrivateMessage> getRequestPrivateMessageList(int page, int pageSize) {
+		HttpRequest request = HttpUtil.createGet("https://msg.csdn.net/v1/im/query/historySession3")
+				.form("page", page)
+				.form("pageSize", pageSize);
+		addHead(request,
+				"accept: application/json, text/plain, */*\n" +
+						"accept-encoding: gzip, deflate, br\n" +
+						"accept-language: zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7\n" +
+//			"cache-control: no-cache\n" +
+//			"pragma: no-cache\n" +
+						"origin: https://im.csdn.net\n" +
+						"referer: https://im.csdn.net/chat/\n" +
+						"sec-ch-ua: \".Not/A)Brand\";v=\"99\", \"Google Chrome\";v=\"103\", \"Chromium\";v=\"103\"\n" +
+						"sec-ch-ua-mobile: ?0\n" +
+						"sec-ch-ua-platform: \"Windows\"\n" +
+						"sec-fetch-dest: empty\n" +
+						"sec-fetch-mode: cors\n" +
+						"sec-fetch-site: same-site\n" +
+						"user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36");
+		String body = request.execute().body();
+		PrivateMessageResponse root = JSON.parseObject(body, PrivateMessageResponse.class);
+		return root.getData();
+	}
+
+	/**
+	 * 给用户私信
+	 */
+	@SneakyThrows
+	public static boolean sendPrivateMessage(String toUsername, String messageType, String messageBody, String fromClientType, String fromDeviceId,String appId) {
+		HttpRequest post = HttpUtil.createPost("https://msg.csdn.net/v1/im/send/message");
+		post.form("toUsername", toUsername);
+		post.form("messageType", messageType);
+		post.form("messageBody", messageBody);
+		post.form("fromClientType", fromClientType);
+		post.form("fromDeviceId", fromDeviceId);
+		post.form("appId", appId);
+		addHead(post, "accept: application/json, text/plain, */*\n" +
+				"accept-encoding: gzip, deflate, br\n" +
+				"accept-language: zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7\n" +
+				"content-length: 692\n" +
+				"content-type: multipart/form-data; boundary=----WebKitFormBoundaryvaOj1kTzDPjBwRXz\n" +
+				"origin: https://im.csdn.net\n" +
+				"referer: https://im.csdn.net/chat/"+toUsername+"\n" +
+				"sec-ch-ua: \" Not A;Brand\";v=\"99\", \"Chromium\";v=\"102\", \"Google Chrome\";v=\"102\"\n" +
+				"sec-ch-ua-mobile: ?0\n" +
+				"sec-ch-ua-platform: \"Windows\"\n" +
+				"sec-fetch-dest: empty\n" +
+				"sec-fetch-mode: cors\n" +
+				"sec-fetch-site: same-site\n" +
+				"user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36");
+		HttpResponse httpResponse = post.executeAsync();
+		log.info("给["+toUsername+"]私信成功!私信内容:"+messageBody);
+
+		TimeUnit.SECONDS.sleep(COMMENT_SLEEP);
+		return httpResponse.isOk() && httpResponse.body().contains("success");
 	}
 
 }
