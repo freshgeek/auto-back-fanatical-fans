@@ -1,5 +1,6 @@
 package top.chen.fansback.common.cmd;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
@@ -213,9 +214,9 @@ public class CsdnRequest {
 		Optional<Document> parse = Optional.ofNullable(Jsoup.parse(request.execute().body()));
 		ArticleList list = new ArticleList();
 		list.setUrl(url);
-		list.setAuthor(parse.map(s -> s.select("#uid > span")).map(s -> s.get(0)).map(s -> s.attr("username")).orElse(null));
-		list.setTitle(parse.map(s -> s.select("head > meta:nth-child(17)")).map(s -> s.get(0)).map(s -> s.attr("content")).orElse(null));
-		list.setDescription(parse.map(s -> s.select("head > meta:nth-child(19)")).map(s -> s.get(0)).map(s -> s.attr("content")).orElse(null));
+		list.setAuthor(parse.map(s -> s.select("#uid > span")).filter(CollUtil::isNotEmpty).map(s -> s.get(0)).map(s -> s.attr("username")).orElse(null));
+		list.setTitle(parse.map(s -> s.select("head > meta:nth-child(17)")).filter(CollUtil::isNotEmpty).map(s -> s.get(0)).map(s -> s.attr("content")).orElse(null));
+		list.setDescription(parse.map(s -> s.select("head > meta:nth-child(19)")).filter(CollUtil::isNotEmpty).map(s -> s.get(0)).map(s -> s.attr("content")).orElse(null));
 		return list;
 	}
 
