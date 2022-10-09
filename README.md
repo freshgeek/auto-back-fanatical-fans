@@ -50,6 +50,11 @@
 3. 右键运行即可
 4. 三连可以选择注释掉（默认会对文章：评论、点赞、收藏）
 
+## 给私信未读消息用户的文章主动进行三联,且私信回复  [#issues3](https://github.com/freshgeek/auto-back-fanatical-fans/issues/3)
+1. 配置私信内容: top.chen.fansback.common.spider.csdn.queryPrivateMessage方法的message变量为私信内容
+2. 配置fromDeviceId: top.chen.fansback.common.spider.csdn.queryPrivateMessage方法的fromDeviceId变量,获取方法如图
+   2.1 首先随便找个好友在聊天输入框中随便打几个字 然后F12抓包 按下Enter发送内容即可获取fromDeviceId的值
+ ![图片示例](image/1660102478395.png)
 
 ## 配置项&说明
 1. 评论的文案：top.chen.fansback.common.BackProperties 这里面(欢迎大家提交新的文案供大家参考)

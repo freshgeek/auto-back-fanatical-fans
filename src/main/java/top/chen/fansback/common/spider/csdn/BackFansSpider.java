@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import top.chen.fansback.common.spider.csdn.dto.home.PrivateMessage;
 
 /**
  * 1. 定时多久扫描我的消息栏（前提登录），看是否有点赞、关注的信息
@@ -36,7 +37,7 @@ public class BackFansSpider {
 	static boolean BACK_FOLLOW = false;
 	static boolean BACK_LIKE_ARTICLE = false;
 	static boolean LIKE_COMMENT = false;
-
+	static boolean FLAG = true;
 	static {
 		UniqDatasource.exists("");
 	}
@@ -63,6 +64,12 @@ public class BackFansSpider {
 	static void run() {
 		runCommentBack();
 		runLikeFavBack();
+		
+		/**
+		 * 私信消息处理
+		 * 有未读私信 给此人最新一条消息三联支持 且私信告知
+		 */
+		queryPrivateMessage();
 	}
 
 	private static void runLikeFavBack() {
@@ -161,10 +168,74 @@ public class BackFansSpider {
 		}
 	}
 
+	
+	/**
+	 * 私信消息处理
+	 * 有未读私信 给此人最新一条消息三联支持 且私信告知
+	 */
+	@SneakyThrows
+	static void queryPrivateMessage(){
+		List<PrivateMessage> privateMessageList =CsdnRequest.getRequestPrivateMessageList(1,10000);
+		for (PrivateMessage privateMessage : privateMessageList) {
+			if (privateMessage.getUnReadCount() >0) {
+				log.debug("未读私信消息处理：{} ， 消息内容{}", privateMessage.getNickname(),privateMessage.getContent());
+				// 点赞 收藏
+				// 找文章主页前n个文章
+				String name = privateMessage.getUsername();
+				List<ArticleList> lastList = CsdnRequest.getUserArticleList(name, false, 10);
+				if (CollUtil.isEmpty(lastList)) {
+					log.debug("当前用户没有文章：{}", name);
+				}else{
+					//收藏 点赞
+					String format = "";
+					for (ArticleList url : lastList) {
+						format = String.format("%s_%s", url.getArticleId(), name);
+						if (UniqDatasource.exists(format)) {
+							log.debug("当前消息{} ， {} 已处理，跳过",url.getArticleId(), name);
+							continue;
+						}
+						// task 是否处理，已处理完成
+						// 未处理，查
+						boolean success = CsdnRequest.postAddFav(url.getUrl(), name, url.getTitle(), url.getDescription());
+						boolean b = CsdnRequest.postLikeArticle(url.getUrl());
+						log.debug("点赞收藏已处理完成！！！用户为：{}", privateMessage.getNickname());
+						//评论
+						if (CsdnRequest.ARTICLE_COMMENT_LIMIT) {
+							log.warn("评论被限制，先跳过，限制解除后再继续回馈");
+							continue;
+						}
+						if (CsdnRequest.postComment(url.getTitle(), url.getUrl())) {
+							log.debug("文章评论已处理完成 ！！！用户为：{}，文章为:{}", privateMessage.getNickname(),url);
+							UniqDatasource.save(format);
+							break;
+						}
+					}
+					TimeUnit.SECONDS.sleep(3);
+					//私信内容
+					String message = "已经优质三联支持,期待您的回访";
+					//每个账号唯一的,需要发消息时抓包获取
+					String fromDeviceId= "";
+					boolean sendPrivateMessageRes = CsdnRequest.sendPrivateMessage(name, "0", message, "WEB", fromDeviceId, "CSDN-PC");
+					if (sendPrivateMessageRes) {
+						log.debug("私信已处理完成 ！！！用户为：{}，私信内容为:{}", privateMessage.getNickname(),message);
+					}
+				}
+			}else{
+				log.debug("用户昵称：{} ， 没有未读私信消息!!!", privateMessage.getNickname());
+			}
+		}
+		log.debug("-------------------------私信消息处理结束-------------------------");
+		FLAG = false;
+	}
+	
 	@SneakyThrows
 	public static void main(String[] args) {
 		while (true) {
 			try {
+				if (!FLAG) {
+					log.debug("------------------------------------------程序结束--------------------------------------------------------");
+					return;
+				}
 				run();
 			} catch (Exception e) {
 				log.error("发送异常：", e);
